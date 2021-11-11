@@ -1,0 +1,2 @@
+    • Vad är en shebang?
+Det är ett tecken “#!” som man har i början av en scriptfil och det berättar för systemet att en shellscript kommer att påbörjas. Om man t.ex ska köra en python fil kommer man ha en absolut path till python i systemet för att köra python scriptet.

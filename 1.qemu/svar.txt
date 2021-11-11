@@ -1,0 +1,9 @@
+2.1 
+    1. Vilken/vilka är gästmaskinerna? Gästmaskiner är självständiga instanser av en operative system.
+    2. Vilken/vilka är hostmaskinerna? Det är den fysiska hårdvaran. Genom hostmaskin kan vi skapa instanser av andra maskiner som kallas för VMs eller gästmaskiner.
+5.2.
+Genomförde rad 5 med koden:
+scp rayba120@ssh.edu.liu.se:/etc/network/interfaces ./
+
+Genomförde rad 6 med koden:
+scp -r rayba120@ssh.edu.liu.se:/etc/default ./

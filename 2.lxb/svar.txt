@@ -1,0 +1,36 @@
+Läs man:s man-sida (man man) och svara på följande: 	
+
+    • Vilka är de 9 avsnitten?
+Executable programs or shell commands,  System calls, Library calls, Special files, File formats and conventions, Games, Miscellaneous, System administration commands, Kernel routines		
+    • Vilket avsnitt dokumenterar kommandoradsverktyg så som cat eller ls?
+1
+    • Kör journalctl, och med hjälp av tail visa bara de sista 5 raderna.
+Tail –n 5 journalctl		
+    • Hur byter man ägare på en fil?
+chown användare_att_byta_till filnamp 	
+    • Hur gör man en fil körbar enbart för dess grupp?
+chown :gruppen_namn  filnamn	
+chmod  g+x,  g står för gruppen, + står för ge tillgång, x står för exkverrings tillåtelse		
+    • Hur packar man upp en .tar.gz fil?
+Tar –xvzf fil.tar.gz, där x extraherar, v listar alla filer som extraheras, z dekompressar filerna, f berättar fil namnet den ska jobba med		
+    • Hur packar man ner en mapp i en .tar.xz fil?
+Tar –cf [namn].tar.xz din_mapp, där c står för skapa, f berättar filnamnet den ska jobba med
+    • Lägg till /courses/TDDI41 i er PATH, pröva kör start_single.sh utan att ange sökväg.
+    • Gör ändringen permanent
+    • echo "export PATH=$PATH:/courses/TDDI41" >> .profile
+
+    • Sätt LC_ALL till sv_SE.utf-8 och öppna man(1). Vad händer?
+Export LC_ALL=sv_SE.utf-8
+Allt blir svenska
+    • D
+    • 
+    •     Hur får man en lista över alla systemd-enheter (units)?
+systemctl list-unit-files
+    •     Hur startar man om sin ssh-server?
+/etc/init.d/ssh restart
+
+    • SSH:a in i er VM (om ni inte redan är in-ssh:ade). Leta rätt på sshd (ssh-serverns) logg, och visa den posten där det står att ni loggade in.
+journalctl --list-boots
+
+
+
