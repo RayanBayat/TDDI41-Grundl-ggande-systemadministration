@@ -9,7 +9,13 @@ import crypt
 import re
 import random
 
+
+if len(sys.argv)<2 or len(sys.argv) > 2:
+    print("You need to give one list of names. example = ./lab4.py mylist")
+    sys.exit(1)
+
 def create_username(user_list):
+
     file = sys.argv[1]
     subprocess.run(['iconv', '-f', 'UTF-8', '-t', 'ASCII', '-c', '-o', 'names_output.txt', file])
     # vi ersätter alla specialbokstäver med motsvarande i ascii och sparar om det i filen
@@ -28,7 +34,7 @@ def create_username(user_list):
             if len(person) >= 2:
                 lastpart = list(''.join(filter(str.isalpha,person[1])))
                 if len(firstpart) > 2 and len(lastpart) >= 2:
-                    username = firstpart[0]+firstpart[1]+firstpart[2]+lastpart[0]+lastpart[1]+str(loop_counter)
+                    username = firstpart[0]+firstpart[1]+firstpart[2]+lastpart[0]+lastpart[1]+(number)
                 elif len(lastpart) > 2 and len(firstpart) == 2:
                     username = firstpart[0]+firstpart[1]+lastpart[0]+lastpart[1]+lastpart[2]+(number)
                 else:
@@ -37,38 +43,62 @@ def create_username(user_list):
                 username = ''.join((secrets.choice(string.ascii_letters) for i in range(5)))+(number)
             username = username.lower()
             already_exists = subprocess.run('getent passwd ' + username,stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT,shell = True)
-            if already_exists.returncode == 0:
-                username = username[:-1]
+            while already_exists.returncode == 0:
+                number = ''.join((random.choice(string.digits) for i in range(3)))
+                username = username[:-3]
                 username = username + number
+                already_exists = subprocess.run('getent passwd ' + username,stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT,shell = True)
+                
             user_list.append(username)
-            
+    file.close()
 
 def add_user(user_list):
      my_dict = {}
-     for x in user_list:
-         username = x
-         password = ''.join((secrets.choice(string.ascii_letters) for i in range(3)))#ett sätt i python att skapa säkra lösenord som är 3 charactarer långa
-         enc_pass = crypt.crypt(password)#vi krypterar lösenordet
-         my_dict.update({username:password})# vi sparar lösenordet i mappen framför namnet
+     with open('passwords.txt','w+') as file:
+         
+         for x in user_list:
+             username = x
+             password = ''.join((secrets.choice(string.ascii_letters) for i in range(3)))#ett sätt i python att skapa säkra lösenord som är 3 charactarer långa
+             enc_pass = crypt.crypt(password)#vi krypterar lösenordet
+             my_dict.update({username:password})# vi sparar lösenordet i mappen framför namnet
      
-         try:
-             subprocess.run(['useradd', '-m', username]) # med -p sätter vi lösenordet för användaren och med -m skapar vi home directory för användaren
-             subprocess.run('echo '+username+':'+password+'|chpasswd',shell = True)
-             print('\x1b[32m'+"User "+ username+ " created" + '\x1b[0m')
-         except:
-             print('\033[31m' + "Failed to add user.")
-             print('\x1b[0m')
-             sys.exit(1)
+             try:
+                 subprocess.run(['useradd', '-m', username]) # med -p sätter vi lösenordet för användaren och med -m skapar vi home directory för användaren
+            # subprocess.run('echo '+username+':'+password+'|chpasswd',shell = True)
+                 file.write(username + ':' + password + '\n')
+         
+                 print('\x1b[32m'+"User "+ username+ " created" + '\x1b[0m')
+             except:
+                 print('\033[31m' + "Failed to add user.")
+                 print('\x1b[0m')
+                 sys.exit(1)
+     #with open('passwords.txt','r+') as file1:
+       #  line = file1.readline()
+       #  print(line)
+       #subprocess.Popen('cat' + file1,shell=True,stdin=None,stdout=subprocess.PIPE,stderr=subprocess.PIPE
+         file.close()
+         #subprocess.run(['cat passwords.txt'],shell=True)
+         subprocess.run(['chpasswd < passwords.txt'],shell=True)
+         subprocess.run(['rm passwords.txt'],shell = True)
+        # chpasswd = subprocess.Popen('chpasswd',shell=True,stdin=passwords.stdout,stdout=PIPE)
+         #passwords.stdout.close()
+         #chpasswd.communicate()
+         #subprocess.run(['chpasswd < ' + file],shell = True)        
      print("User : " + "Password")  
      for key in my_dict:
+             
          print(key,':',my_dict[key])
-
+     print('\x1b[32m'+"*^^*^^*All users added*^^*^^*" + '\x1b[0m')
 def user_delete(user_list):
     print('\x1b[32m')
     for x in user_list:
        
         subprocess.run(['userdel', '-r', x]) 
     print('\x1b[0m')
+    print('\x1b[32m'+"*__*__*All users deleted*__*__*" + '\x1b[0m')
+    print('\x1b[33m' + "================================================")
+    print('\x1b[0m')
+
 def test_is_root():
     user = 'root'
     exists = subprocess.run('cat /etc/passwd | grep ' + user,stdout=subprocess.DEVNULL,
@@ -96,11 +126,8 @@ print('\x1b[33m'+"================================================"+'\x1b[0m')
 user_list = []
 create_username(user_list)
 add_user(user_list)
-print('\x1b[32m'+"*^^*^^*All users added*^^*^^*" + '\x1b[0m')
+
 user_delete(user_list)
-print('\x1b[32m'+"*__*__*All users deleted*__*__*" + '\x1b[0m')
-print('\x1b[33m' + "================================================")
-print('\x1b[0m')
 
 
 test_is_root()
