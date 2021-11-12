@@ -1,4 +1,4 @@
-# importing linrary
+#!/usr/bin/env python3
 import os
 import subprocess
 import sys
@@ -7,9 +7,11 @@ import secrets
 import string
 import crypt
 import re
+import random
 
 def create_username(user_list):
-    subprocess.run(['iconv', '-f', 'UTF-7', '-t', 'ASCII', '-c', '-o', 'names_output.txt', 'names.txt'])
+    file = sys.argv[1]
+    subprocess.run(['iconv', '-f', 'UTF-8', '-t', 'ASCII', '-c', '-o', 'names_output.txt', file])
     # vi ersätter alla specialbokstäver med motsvarande i ascii och sparar om det i filen
     with open('names_output.txt','r+') as file:
         my_lists = file.readlines()
@@ -17,6 +19,7 @@ def create_username(user_list):
         loop_counter = 0
     
         for x in my_lists:
+            number = ''.join((random.choice(string.digits) for i in range(3)))
             person = my_lists[loop_counter].split()
             loop_counter = loop_counter+1
             if len(person) < 1:
@@ -27,12 +30,16 @@ def create_username(user_list):
                 if len(firstpart) > 2 and len(lastpart) >= 2:
                     username = firstpart[0]+firstpart[1]+firstpart[2]+lastpart[0]+lastpart[1]+str(loop_counter)
                 elif len(lastpart) > 2 and len(firstpart) == 2:
-                    username = firstpart[0]+firstpart[1]+lastpart[0]+lastpart[1]+lastpart[2]+str(loop_counter)
+                    username = firstpart[0]+firstpart[1]+lastpart[0]+lastpart[1]+lastpart[2]+(number)
                 else:
-                    username = ''.join((secrets.choice(string.ascii_letters) for i in range(5)))+str(loop_counter)
+                    username = ''.join((secrets.choice(string.ascii_letters) for i in range(5)))+(number)
             else:
-                username = ''.join((secrets.choice(string.ascii_letters) for i in range(5)))+str(loop_counter)
+                username = ''.join((secrets.choice(string.ascii_letters) for i in range(5)))+(number)
             username = username.lower()
+            already_exists = subprocess.run('getent passwd ' + username,stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT,shell = True)
+            if already_exists.returncode == 0:
+                username = username[:-1]
+                username = username + number
             user_list.append(username)
             
 
@@ -45,7 +52,8 @@ def add_user(user_list):
          my_dict.update({username:password})# vi sparar lösenordet i mappen framför namnet
      
          try:
-             subprocess.run(['useradd', '-p', enc_pass, '-m', username]) # med -p sätter vi lösenordet för användaren och med -m skapar vi home directory för användaren
+             subprocess.run(['useradd', '-m', username]) # med -p sätter vi lösenordet för användaren och med -m skapar vi home directory för användaren
+             subprocess.run('echo '+username+':'+password+'|chpasswd',shell = True)
              print('\x1b[32m'+"User "+ username+ " created" + '\x1b[0m')
          except:
              print('\033[31m' + "Failed to add user.")
