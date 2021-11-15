@@ -1,0 +1,15 @@
+import subprocess
+
+def test_IP():
+    IP = subprocess.run(['cat /etc/network/interfaces | grep 192.168.1.4'],shell = True)
+    assert IP.returncode==0
+
+def test_Network():
+    IP = subprocess.run(['cat /etc/network/interfaces | grep 255.255.255.0'],shell = True)
+    assert IP.returncode==0
+
+def test_Gateway():
+    IP = subprocess.run(['cat /etc/network/interfaces | grep 192.168.1.1'],shell = True)
+    assert IP.returncode==0
+
+    
