@@ -19,9 +19,13 @@ def test_hostname():
 def test_reach_router():
     reaches = subprocess.run(['ping 192.168.1.1 -c 1'],shell = True)
     assert reaches.returncode ==0
+def test_reach_internet():
+    reaches = subprocess.run(['ping google.com -c 1'],shell = True)
+    assert reaches.returncode ==0
 
 test_IP()
 test_Network()
 test_Gateway()
 test_hostname()
 test_reach_router()
+test_reach_internet()
