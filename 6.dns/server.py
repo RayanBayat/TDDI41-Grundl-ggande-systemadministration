@@ -33,6 +33,10 @@ def test_reverse_machines_client_2():
 def test_reverse_machines_router():
     reverse = subprocess.run(['nslookup 192.168.1.1| grep router'],shell = True)
     assert reverse.returncode == 0
+def test_server_status():
+    status = subprocess.run(['ping server.example.com -c 1'], shell = True)
+    assert status.returncode == 0
+
 
 test_named()
 test_forward()
@@ -43,3 +47,4 @@ test_forward_machines_router()
 test_reverse_machines_client_1()
 test_reverse_machines_client_2()
 test_reverse_machines_router()
+test_server_status()
