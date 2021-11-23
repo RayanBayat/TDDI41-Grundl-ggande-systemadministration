@@ -1,0 +1,10 @@
+import subprocess
+
+
+def test_domain():
+    domain = subprocess.run(['domainname | grep nis.example.com'],shell = True)
+    print(domain.returncode)
+
+
+
+test_domain()

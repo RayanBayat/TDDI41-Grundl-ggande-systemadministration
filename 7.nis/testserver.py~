@@ -1,0 +1,7 @@
+import subprocess
+
+def test_directory():
+    directory = subprocess.run(["'ls -l /var/yp/nis.example.com | grep 'group.bygid\|group.byname\|hosts.byaddr\|hosts.byname\|netgroup\|netgroup.byhost\|netgroup.byuser\|netid.byname\|passwd.byname\|passwd.byuid\|protocols.byname\|protocols.bynumber\|rpc.byname\|rpc.bynumber\|services.byname\|services.byservicename\|ypservers'"],shell = True)
+    assert directory.returncode == 0
+
+test_directory()
