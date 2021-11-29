@@ -1,1 +1,32 @@
- 
+*Varför NTP är stratifierat (har strata, som på engelska heter stratum)? Varför talar man inte bara direkt med någon referensserver?
+
+stratum anger noggranheten på klockorna. Det börjar från 0 vilket också kallas för referens klocka, det kan t.ex vara GPS eller en radio klocka. Anledningen att vi inte kan prata med en referesserver är att datorn måste vara kopplat till en GPS genom en port vilket det inte är i vårt fall, därför pratar vi istället med en dator som är och hämtar vår tid på det viset.
+
+
+*En NTP-klient brukar inte bara ändra systemklockan till en viss tid direkt, utan ökar/minskar hastigheten så att man når målet lite mjukare. Varför?
+
+En plötslig ändring i tid kan skapa problem för vissa processer i datorn, därför försöker NTP sega ner eller öka farten på tiden istället för att undvika dessa felen.
+
+*Kör ntpq -p från en terminal på en IDA-maskin/thinlinc. Förklara vad de olika kolumnerna betyder, och hur ska man tolka att det finns flera rader i tabellen. 
+
+root@client-1:~/8.ntp# ntpq -p
+     remote           refid      st t when poll reach   delay   offset  jitter
+==============================================================================
+*NTP-server      194.58.203.148   2 u  114  128  377    1.616    0.836   1.360
+
+
+Det som står ovan är taget från min client-1.
+Vi börjar från vänster.
+
+- Systemet alltså client-1 tar sin tid från NTP-server (vilket egentligen är in router) vilket i sin tur tar tiden från 194.58.202.20.
+- remote är den servern som systemet tar sin tid från
+- refid är vad själva remote är syncroniserad till
+- st står för serverns stratum nivå
+- t berättar vilken typen, i vårt fall är det unicast men det kan också vara broadcast, multicast eller manycast
+- when visar hur länge det har gått sen man sist undesökte(pollade) servern
+- Poll visar hur ofta servern undersöks
+- reach visar resultatet av åtta senaste NTP uppdateringar. Om alla åtta lyckas ska det stå 377, denhär siffran står i octal alltså basen 8
+-
+- Delay refererar till försening(delay) att nå servern
+- Offset berättar tidsskillnaden mellan den locala klockan och serverns klocka
+- Jitter visar avvikelsen i tid som är rapporterad för den servern
