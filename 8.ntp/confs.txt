@@ -1,0 +1,32 @@
+
+=========================ROUTER==========================
+Vi började först med att installera ntp på routern med
+"apt-get install ntp"
+därefter gick vi in i kofigrationsfilen i "/etc/ntp.conf" och lade in dessa rader:
+server 0.se.pool.ntp.org
+server 1.se.pool.ntp.org
+server 2.se.pool.ntp.org
+server 3.se.pool.ntp.org
+
+därefter startar vi NTP servern med
+"service ntp restart"
+därefter ändrade körde vi följande kod i firewall
+"ufw allow from any to any port 123 proto udp"
+Det koden gör är att den öppnar porten 123 för inkomna uppkopplingar så att
+de kan nå NTP servern på UDP port 123
+
+========================Clients==========================
+
+På clienternas sida laddade vi ner ntpdate som låter oss manuellt titta på
+uppkopplings configeration.
+Vi lade till ip addressen för vår NTP-server i "/etc/hosts" filen:
+192.168.1.1	NTP-server
+
+I nästa steg stänger vi av timesyncd servicen på client machinerna med koden
+"timedatectl set-ntp off" för att vi vill synca de med vår NTP server istället
+
+Därefter installerar vi ntp som vi gjorde på routern ovanför
+Men i configrationsfilen "/etc/ntp.conf" lägger vi vår NTP-server:
+"server NTP-server prefer iburst"
+
+Därefter startar vi bara NTP servern och kör ntpq -p för att titta i tabellen
