@@ -11,3 +11,5 @@ def test_conf():
 def test_queries():
         quer = subprocess.run(['ntpq -p | grep *NTP-server'], shell = True)
         assert quer.returncode == 0
+def test_time():
+        time = subprocess.run(['ntpstat | grep '])
