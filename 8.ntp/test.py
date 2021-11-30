@@ -36,3 +36,4 @@ def test_time1():
 test_conf()
 test_queries()
 test_time()
+test_time1()
