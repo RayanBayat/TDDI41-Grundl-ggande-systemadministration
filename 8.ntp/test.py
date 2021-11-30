@@ -18,11 +18,20 @@ def test_time():
         words = word.split()
         timer = int(words[3])
         answer = subprocess.run('true')
-        if timer > 64 or timer < 1024:          
+        if timer >= 64 or timer <= 1024:          
                 assert answer.returncode == 0
         else:
                 assert answer.returncode == 1
-
+def test_time1():
+        time = subprocess.run(['ntpstat | grep time'],shell = True, capture_output=True)        
+        word = time.stdout.decode("utf-8")
+        words = word.split()
+        timer = int(words[4])
+        answer = subprocess.run('true')
+        if timer >= 0 or timer <= 180000:          
+                assert answer.returncode == 0
+        else:
+                assert answer.returncode == 1
                       
 test_conf()
 test_queries()
