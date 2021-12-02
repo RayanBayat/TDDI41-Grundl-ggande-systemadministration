@@ -62,13 +62,13 @@ def add_user(user_list):
              password = ''.join((secrets.choice(string.ascii_letters) for i in range(3)))#ett sätt i python att skapa säkra lösenord som är 3 charactarer långa
              enc_pass = crypt.crypt(password)#vi krypterar lösenordet
              my_dict.update({username:password})# vi sparar lösenordet i mappen framför namnet
-             print(randomm)
+           
              try:
                  if randomm == 0:
                      subprocess.run(['useradd '+ username +' -m '+' -d '+"/home2/"+username],shell = True)
-                     print("gay")
+                  
                  else:
-                     print("hay")
+                    
                      subprocess.run(['useradd '+ username +' -m '+' -d '+"/home1/"+username],shell = True)
       
                  subprocess.run(['usermod ' + username + " -d /home/"+ username],shell = True) 
@@ -95,8 +95,9 @@ def user_delete(user_list):
     print('\x1b[32m')
     for x in user_list:
        
-        subprocess.run(['userdel', '-r', x])
-      #  subprocess.run(['rm -r /home1'
+        subprocess.run(['userdel '+ x],stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT,shell = True)
+        subprocess.run(['rm -r /home1/' + x],stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT,shell = True)
+        subprocess.run(['rm -r /home2/' + x],stdout=subprocess.DEVNULL,stderr=subprocess.STDOUT,shell = True)
     print('\x1b[0m')
     print('\x1b[32m'+"*__*__*All users deleted*__*__*" + '\x1b[0m')
     print('\x1b[33m' + "================================================")
@@ -108,7 +109,6 @@ print('\x1b[33m'+"================================================"+'\x1b[0m')
 user_list = []
 create_username(user_list)
 add_user(user_list)
-
 #user_delete(user_list)
 subprocess.run(['make -C /var/yp'],shell=True)
 print('Nis map updated')

@@ -1,1 +1,57 @@
+Vad är syftet med /etc/fstab?
+	Den listar alla tillgängliga diskar och diskpartitioner, och indikerar hur de 	ska initialisera eller integreras i systemets filsystem. 
+Vad används kommandot mke2fs (mkfs.ext{2..4} till?
+mke2fs används för att skapa ett ext2,ext3 or ext4 filsystem, vanligtvis i en disk partition.
+Vad skriver kommandot df -h ut?
+Kommer visa filsystemets diskutrymme statistiken på ett sätt som är förståeligt för oss människor, det anger detaljer i bytes, megabytes och gigabytes
+
+Förklara vad kommandot mount -t ext3 /dev/sdb2 /mnt/media innebär
+Den monterar /dev/sdb2 under /mnt/media med hjälp av filetype ext3. 
+
+------------------------------------------------------------------------------------------------
+
+Vad står förkortningen RAID för?
+	Redundant Array of Independent Disks eller Redundant Array of 		Inexpensive Disks beroende på vem man frågar.
+Förklara i grova drag hur RAID-0 fungerar
+Två eller fler diskar är kombinerad med varandra för att utgöra en volume. läsning och skrivning till volumen är delat till det som kallas för “blocks” och dessa blockar går genom alla diskar som utgör volumen. Om en av diskarna går sönder kommer all data försvinna från hela volumen, med andra ord all data försvinner. Skrivningar till volumen delas i flera delar och varje del skickas till varsin disk. Dessa skrivningar sker i parallellt. Detta gör att RAID-0 är ganska snabb och huvud anledningen som man använder RAID-0. Exempel  taget från wiki: Om det tar 10 sekunder att skriva till en enstaka disk kommer det ta 2 sekunder att skriva i en volume som består av 5 diskar.
+Förklara i grova drag hur RAID-1 fungerar
+Två eller flera lika stora diskar som har exakt samma data i sig, så att även om alla förutom en disk går sönder förloras inget data. Samtidigt höjs läsbarhet med tanken på att varje disk kan användas för läsning. 
+
+
+Vad innebär kommandot mdadm --stop /dev/md0 ?
+Man stoppar arrayen på så sätt att man måste assembla den igen för att kunna starta det på nytt. 
+------------------------------------------------------------------------------------------------
+Förklara följande begrepp: fysisk volym (PV: Physical Volume), volymgrupp (VG: Volume Group) och logisk volym (LV: Logical Volume) och hur de hänger ihop
+PV är helt enkelt en hårddisk.
+VG är en insamling av en eller flera PV.
+LV sitter inne i en grupp och utgör ett virtuellt partition 
+LV är det som vi användare kan se genom operativsystemet, den ligger klart för oss att använda och lägga filer i och är högsta steget, under detta kommer VG vilket är gruppindelningar av de fysiska diskarna som befinner sig I PV. Pv är som sagt den lägsta nivån och man kan ta på diskarna med hand. Man kan se PV, VG och LV som byggblock, ena ligger ovanför den andra och användaren ser det som är längst upp genom operativsystemet.
+Vad är kommandot för att göra klart en fysisk volym för lvm?
+pvcreate [1:a pv] [etc]
+pvs -> confirm
+
+Vad är kommandot för att skapa en volymgrupp?
+vgcreate namn_på_volymgrupp [1:a pv] [etc]
+vgs -> confirm 
+
+Vad är kommandot för att utöka en volymgrupp med ytterligare en PV?
+vgextend namn_på_volymgrupp [pv]
+
+Hur skapar du en logisk volym på 100MB från en volymgrupp?
+	lvcreate -L 100M -n [1:a logisk_volymgrupp] [namn_på_volymgrupp]
+	lvs -> confirm
+------------------------------------------------------------------------------------------------
+Vad är en automount map?
+automount determines which mount points to monitor and which filesystems to mount from a special set of configuration files called maps. Maps can reside on the local machine or be managed via NIS. By convention, all local automount maps are located in the /etc directory and have filenames prefixed with auto.
+automount bestämmer vilket mount points för att montera och vilka filsystem som ska monteras 
+Vilket paket behöver du installera för att använda automount?
+autofs
+
+Vad är det för skillnad på direkta och indirekta automount maps?
+Indirect maps, except for the internal hosts map, can be changed on the 	fly and the automounter will recognize those changes on the next 	operation it performs on that map. Direct maps require a HUP signal 	be sent to the daemon to refresh their contents as does the master map.
+
+Vad heter huvudkonfigurations-filen för automount
+/etc/auto.master
+------------------------------------------------------------------------------------------------
+
  
