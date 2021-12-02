@@ -57,14 +57,21 @@ def add_user(user_list):
      with open('passwords.txt','w+') as file:
          
          for x in user_list:
+             randomm = (int(''.join((random.choice(string.digits) for i in range(3)))) % 2)
              username = x
              password = ''.join((secrets.choice(string.ascii_letters) for i in range(3)))#ett sätt i python att skapa säkra lösenord som är 3 charactarer långa
              enc_pass = crypt.crypt(password)#vi krypterar lösenordet
              my_dict.update({username:password})# vi sparar lösenordet i mappen framför namnet
-     
+             print(randomm)
              try:
-                 subprocess.run(['useradd', '-m', username]) # med -p sätter vi lösenordet för användaren och med -m skapar vi home directory för användaren
-            # subprocess.run('echo '+username+':'+password+'|chpasswd',shell = True)
+                 if randomm == 0:
+                     subprocess.run(['useradd '+ username +' -m '+' -d '+"/home2/"+username],shell = True)
+                     print("gay")
+                 else:
+                     print("hay")
+                     subprocess.run(['useradd '+ username +' -m '+' -d '+"/home1/"+username],shell = True)
+      
+                 subprocess.run(['usermod ' + username + " -d /home/"+ username],shell = True) 
                  file.write(username + ':' + password + '\n')
          
                  print('\x1b[32m'+"User "+ username+ " created" + '\x1b[0m')
@@ -72,18 +79,12 @@ def add_user(user_list):
                  print('\033[31m' + "Failed to add user.")
                  print('\x1b[0m')
                  sys.exit(1)
-     #with open('passwords.txt','r+') as file1:
-       #  line = file1.readline()
-       #  print(line)
-       #subprocess.Popen('cat' + file1,shell=True,stdin=None,stdout=subprocess.PIPE,stderr=subprocess.PIPE
+   
          file.close()
-         #subprocess.run(['cat passwords.txt'],shell=True)
+     
          subprocess.run(['chpasswd < passwords.txt'],shell=True)
          subprocess.run(['rm passwords.txt'],shell = True)
-        # chpasswd = subprocess.Popen('chpasswd',shell=True,stdin=passwords.stdout,stdout=PIPE)
-         #passwords.stdout.close()
-         #chpasswd.communicate()
-         #subprocess.run(['chpasswd < ' + file],shell = True)        
+             
      print("User : " + "Password")  
      for key in my_dict:
              
@@ -94,7 +95,8 @@ def user_delete(user_list):
     print('\x1b[32m')
     for x in user_list:
        
-        subprocess.run(['userdel', '-r', x]) 
+        subprocess.run(['userdel', '-r', x])
+      #  subprocess.run(['rm -r /home1'
     print('\x1b[0m')
     print('\x1b[32m'+"*__*__*All users deleted*__*__*" + '\x1b[0m')
     print('\x1b[33m' + "================================================")
