@@ -33,5 +33,5 @@ apt purge cowsay
 add-apt-repository repo
 
     • Hur tar man bort ett repo?
-rm -r directory, där r tar bort det recursivt
+man add-apt-repository -r repo
 
