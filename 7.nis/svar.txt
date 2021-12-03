@@ -1,1 +1,18 @@
- 
+Vad är en NIS-katalog? (NIS-map)
+NIS-kataloger är databaser som specificerar viss system information såsom användarnamn, lösenord och värdnamn.
+
+Vad är en NIS-domän?
+En NIS-domän är en samling av system som är logiskt grupperade tillsammans.
+En grupp av hosts som delar samma uppsättning av NIS-kataloger tillhör samma domän. 
+
+Vad används ypcat till?
+Kommandot ypcat skriver ut NIS-katalog (Network Information Services) som man anger med parametern MapName.
+
+Vad innebär följande rad i nsswitch.conf passwd: filer nis?
+Nis: Lösenordsinformation kommer att erhållas, ändras och lagras i passwd-kataloger.
+Files: Lösenordsinformation kommer att erhållas, modifieras och lagras i filen /etc/passwd och /etc/shadow-filer.
+
+Vad innebär kommandot make -C /var/yp?
+Kör make filen i följande katalog 
+Vad innebär följande kommando getent passwd?
+för att få information om den för närvarande inloggade användaren. Den visar användarnamn, användar-id och mappnamn. 

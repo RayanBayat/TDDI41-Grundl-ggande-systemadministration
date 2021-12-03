@@ -1,0 +1,91 @@
+===============================Server=============================
+/etc/ypserv.securenets filen :
+
+
+#
+# securenets    This file defines the access rights to your NIS server
+#               for NIS clients (and slave servers - ypxfrd uses this
+#               file too). This file contains netmask/network pairs.
+#               A clients IP address needs to match with at least one
+#               of those.
+#
+#               One can use the word "host" instead of a netmask of
+#               255.255.255.255. Only IP addresses are allowed in this
+#               file, not hostnames.
+#
+# Always allow access for localhost
+255.0.0.0       127.0.0.0
+
+# This line gives access to everybody. PLEASE ADJUST!
+0.0.0.0         0.0.0.0
+255.255.255.0   10.0.0.0
+
+
+/etc/default/nis ändringar :
+
+# /etc/defaults/nis     Configuration settings for the NIS daemons.
+#
+
+# Are we a NIS server and if so what kind (values: false, slave, master)?
+NISSERVER=master
+
+# Are we a NIS client?
+NISCLIENT=true
+
+====================================Client===================================
+
+/etc/yp.conf
+
+
+#
+# yp.conf       Configuration file for the ypbind process. You can define
+#               NIS servers manually here if they can't be found by
+#               broadcasting on the local net (which is the default).
+#
+#               See the manual page of ypbind for the syntax of this file.
+#
+# IMPORTANT:    For the "ypserver", use IP addresses, or make sure that
+#               the host is in /etc/hosts. This file is only interpreted
+#               once, and if DNS isn't reachable yet the ypserver cannot
+#               be resolved and ypbind won't ever bind to the server.
+
+# ypserver ypserver.network.com
+domain nis.example.com server server.example.com
+
+
+
+etc/nsswitch.conf:
+
+  GNU nano 3.2                                                                                                /etc/nsswitch.conf                                                                                                           
+
+# /etc/nsswitch.conf
+#
+# Example configuration of GNU Name Service Switch functionality.
+# If you have the `glibc-doc-reference' and `info' packages installed, try:
+# `info libc "Name Service Switch"' for information about this file.
+
+passwd:         files nis
+group:          files nis
+shadow:         files nis
+gshadow:        files nis
+
+hosts:          files dns
+networks:       files
+
+protocols:      db files
+services:       db files
+ethers:         db files
+rpc:            db files
+
+netgroup:       nis
+automount:      files nis
+
+
+
+
+
+
+
+
+
+
