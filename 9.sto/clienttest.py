@@ -13,3 +13,7 @@ def test_NIS():
         Nis = subprocess.run(["cat /etc/nsswitch.conf | grep automount | grep nis"],shell = True)
         assert Nis.returncode == 0
 
+def test_automount():
+        automount = subprocess.run(["cat /etc/auto.master | grep +auto.master"],shell = True)
+        assert automount.returncode == 0
+        
