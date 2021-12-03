@@ -1,1 +1,88 @@
+Vad är en auktoritativ namnserver?
+En auktoritativ (authoritative name server) namnserver är en namnserver som ger adressinformation i första hand, alltså bara om adresser som finns i dess eget system.
+
+Vad är alternativet till en auktoritativ namnserver
+DNS‑server
+
+Är det skillnad mellan en domän och en zon? Vilken skillnad isåfall?
+Domän representerar alla uppsättningar/maskiner som finns under en organisationsdomännamn
+En zon är namnrymd som ett nameserver är auktoritativ för. T.ex. .se zone
+
+Vad innebär rekursiv slagning? Iterativ? Hur vet DNS-servern du frågar om det är en rekursivt ställd fråga?
+Rekursiv slagning när dns-server kommunicerar med många andra dns-servrar för att hitta ett ip-address. Medan iterativ slagning sker när klienten kommunicerar direkt med var och en av dns-servrarna. Den vet inte. 
+
+I DNS delegerar vi ansvaret för olika zoner. Varför?
+Det gör det möjligt för servrar i ett zon att referera klienten till servrar i ett annat zon.
+
+Ovan beskriver vi hur man kommer fram till att liu.se har adressen 130.236.18.52 (och hela delegerings-hierarkin från root till auktoriteten för .se-domänen, till liu.se). Hur sker en uppslagning ''åt andra hållet'', där man vill slå upp om adressen 130.236.18.52 motsvarar någon webbadress (enligt din DNS-server)? Du kan vilja läsa om reverse DNS.
+Allting sker på samma sätt förutom att att vi skriver adressen tvärtom och vi lägger till .in.addr.arpa i slutet eftersom de är sparade i ett speciellt 		PTR-rekord. 
+
+
+
+
+
+
+Kör dig www.liu.se, vilket bör ge outputen:
+; <<>> DiG 9.11.3-1ubuntu1.13-Ubuntu <<>> www.liu.se
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 64544
+;; flags: qr rd ra ad; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;www.liu.se.			IN	A
+
+;; ANSWER SECTION:
+www.liu.se.		7882	IN	A	130.236.18.52
+
+;; Query time: 0 msec
+;; SERVER: 130.236.1.9#53(130.236.1.9)
+;; WHEN: Fri Oct 23 10:01:05 CEST 2020
+;; MSG SIZE  rcvd: 55
+
+Förklara kortfattat vad de olika delarna av utskriften innebär.
+Första raden är dig-version. 
+Header-sektionen visar informationen den fick från servern.
+OPT PSEUDOSECTION visar avancerad data:
+EDNS – Extension system for DNS, if used
+Flags – blank because no flags were specified
+UDP – UDP packet size
+Question och Answer liknar varandra, första kolumn är domännamn, andra är TTL(time to live), hur länge innan den rekorden uppdateras, tredje kolumn är frågans typ, fjärde är rekord-typ, femte är ip-adressen.
+
+
+
+När du gör en query som till exempel dig ANY liu.se @ns4.liu.se kan du få flera olika sorters resource records (RR) tillbaka. Vad ska A-, AAAA-, NS-, MX- och SOA-records innehålla?
+A-:(IPv4 host address):  130.236.18.52
+AAAA-:(IPv6 host address) : 2001:6b0:17:f100::18:52
+NS-:(Auto resolved alias) : ns4.liu.se. , sunic.sunet.se. , ns3.liu.se.
+MX-:(Mail eXchange): liu-se.mail.protection.outlook.com.
+SOA-:(Start of Authority): blox.it.liu.se. domainmaster.liu.se. 2015111223 36000 3600 1209600 600
+
+Kör dig +trace www.google.com och förklara kortfattat vad som står.
+Vi frågar efter www.google.com från 13 rootservrar, de skickar oss vidare till ansvariga för .com, därefter blir vi vidareskickad till ansvariga för google.com vilket är ns1,ns2,ns3 och ns4, slutligen hittas ip addressen för www.google.com som är 142.250.74.68. Säkerhets Nycklarna kommer också med mellan varje steg.
+
+Hur sätter man önskad DNS-server på Linux
+	Vi ändrar i resolv.conf filen genom att köra kommandot 
+	nano /etc/resolv.conf
+	
+Vad är en SOA post? Vad innebär dess olika fält?
+Serial är helt enkelt vara en version nummer, när man ändrar på den här siffran skickas en signal till andra nameservers att de borde uppdatera sina kopior av zon filer
+Refresh:  är den tiden som andra nameservers behöver vänta tills de frågar main servern efter uppdatering. (ges i sekunder)
+Retry: Den tiden som servern ska vänta innan den frågar den primära namn server att uppdatera igen 
+Expire: Om en andrahands server inte får svar från den primära under denhär tiden ska den sluta skicka all queries till den zonen.
+	Negative Cache TTL: representerar hur länge en DNS record för någon host sparas i cache minnet av en DNS server
+
+Nu har ni kallat er zon för gruppnamn.example.com. Finns det något i DNS-protokollet som hindrar att ni istället sade att ni var google och hade alla deras domäner? I någon utökning av protokollet? Om ni satte upp en falsk tjänst och pekade adressen gmail.com till den via er DNS-server, är det något i DNS eller annat protokoll som skulle hjälpa en användare som använder er DNS-server att upptäcka bluffen?
+Man använder brandväggar runt sina DNS resolvers eftersom DNS resolvers är alltid en del av “DNS hijacking” attacker. Med en bra brandväg skydd kan man blockera alla okända tillträde.
+Man kan också förhindra ZON förflyttning
+Även vanlig användare kan använda tjänster som VPN som hjälper de att dölja sin publika IP address.
+
+
+Nu har ni skrivit zonfiler. Om ni skulle delegera auktoritet för users.gruppnamn.example.com hade ni behövt lägga till några rader i er zon-fil. Vilka, och varför? (Ni kan fundera på delegering av delar av reverse-zon, men utöver att lösningen blir ful, är det inte obligatoriskt.)
+	$ORIGIN delegated.zone. 
+@ 	 IN	NS 	ns2.delegated.zone.
+ns2	 IN 	A 	slave server ip 
+För att huvudzoner ska känna till de andra zoner och därmed kan skicka queries som den får vidare till dem ifall det behövs. 
  

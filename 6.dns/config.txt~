@@ -1,0 +1,100 @@
+===================================Server=================================
+ändringar i named.conf.options
+
+cl "trusted" {
+        192.168.1.3;  # ns1 - can be set to localhost
+        192.168.1.2;  # client-1
+        192.168.1.4;  # client-2
+        192.168.1.1;  # router
+};
+options {
+
+        directory "/var/cache/bind";
+
+        allow-recursion { trusted; };  # allows recursive queries from "trusted" clients
+        recursion yes;
+        listen-on {192.168.1.3;};
+        allow-transfer {none;};
+
+        // If there is a firewall between you and nameservers you want
+        // to talk to, you may need to fix the firewall to allow multiple
+        // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+
+ändringar i named.conf.local:
+
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+zone "server.example.com" IN {
+        type master;
+        file "/etc/bind/forward.example.com";
+};
+
+zone "1.168.192.in-addr.arpa" IN {
+        type master;
+        file "/etc/bind/reverse.example.com";
+};
+
+ändringar i forward.example.com
+
+
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     example.com. root.example.com. (
+                              68        ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      server.example.com.
+@       IN      A       192.168.1.3
+server  IN      A       192.168.1.3
+client-2        IN      A       192.168.1.4
+client-1        IN      A       192.168.1.2
+router  IN      A       192.168.1.1
+
+
+ändringar i reverse.example.com:
+
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     server.example.com. root.example.com. (
+                              3         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      server.example.com.
+3       IN      PTR     server.example.com.
+4       IN      PTR     client-2.example.com.
+2       IN      PTR     client-1.example.com.
+1       IN      PTR     router.example.com.
+
+
+=====================================Clienter===================================
+Ändringar i etc/network/interfaces:
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+allow-hotplug ens3
+iface ens3 inet static
+        address 192.168.1.4
+        netmask 255.255.255.0
+        gateway 192.168.1.1
+        dns-nameservers 192.168.1.3
+        dns-search server.example.com
+
