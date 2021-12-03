@@ -16,8 +16,8 @@ sudo apt upgrade package-name
     • hur ser man vilka filer som ett paket tillhandahåller?
 sudo apt show package-name
 
-    • hur ser man vilket paket som suen fil?
-sudo apt depends fil
+    • hur ser man vilket paket som tillhandahåller en fil?
+sudo apt-file search file
 -----------------------------------------------------------------------------------------
     • Installera paketet cowsay
 apt-get install cowsay
@@ -30,9 +30,8 @@ apt purge cowsay
 
 -----------------------------------------------------------------------------------------
     • Hur lägger man till ett nytt repo?
-sudo apt-get install dpkg-dev
-mkdir -p /username/local/mydebs
-där p skapar mapparna vid behov
+add-apt-repository repo
+
     • Hur tar man bort ett repo?
 rm -r directory, där r tar bort det recursivt
 
