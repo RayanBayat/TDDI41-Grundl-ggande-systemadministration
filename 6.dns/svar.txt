@@ -75,9 +75,7 @@ Expire: Om en andrahands server inte får svar från den primära under denhär 
 	Negative Cache TTL: representerar hur länge en DNS record för någon host sparas i cache minnet av en DNS server
 
 Nu har ni kallat er zon för gruppnamn.example.com. Finns det något i DNS-protokollet som hindrar att ni istället sade att ni var google och hade alla deras domäner? I någon utökning av protokollet? Om ni satte upp en falsk tjänst och pekade adressen gmail.com till den via er DNS-server, är det något i DNS eller annat protokoll som skulle hjälpa en användare som använder er DNS-server att upptäcka bluffen?
-Man använder brandväggar runt sina DNS resolvers eftersom DNS resolvers är alltid en del av “DNS hijacking” attacker. Med en bra brandväg skydd kan man blockera alla okända tillträde.
-Man kan också förhindra ZON förflyttning
-Även vanlig användare kan använda tjänster som VPN som hjälper de att dölja sin publika IP address.
+Nej, Det finns inte direkt något som hindrar en från att sätta upp en sån domän förutom juridiska lagstiftningar som finns kring det som bland annat är stämmning på pengar. Något som man måste tänka på är att jag måste också få andra datorer att använda min dns men ingen kommer peka på min falska google dns.
 
 
 Nu har ni skrivit zonfiler. Om ni skulle delegera auktoritet för users.gruppnamn.example.com hade ni behövt lägga till några rader i er zon-fil. Vilka, och varför? (Ni kan fundera på delegering av delar av reverse-zon, men utöver att lösningen blir ful, är det inte obligatoriskt.)
