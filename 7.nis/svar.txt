@@ -7,12 +7,12 @@ En grupp av hosts som delar samma uppsättning av NIS-kataloger tillhör samma d
 
 Vad används ypcat till?
 Kommandot ypcat skriver ut NIS-katalog (Network Information Services) som man anger med parametern MapName.
+Om man t.ex skriver ypcat passwd kommer information för alla användare på Nis servern att skrivas ut.
 
 Vad innebär följande rad i nsswitch.conf passwd: filer nis?
-Nis: Lösenordsinformation kommer att erhållas, ändras och lagras i passwd-kataloger.
-Files: Lösenordsinformation kommer att erhållas, modifieras och lagras i filen /etc/passwd och /etc/shadow-filer.
+Raden innebär att machinen först  hämtar information för passwd från den lokala katalogen och därefter hämtar den från Nis servern.
 
 Vad innebär kommandot make -C /var/yp?
-Kör make filen i följande katalog 
+Kör make filen i följande katalog, Det som make filen gör är att den uppdaterar informationen på Nis servern, man måste köra denhär kommandot om man t.ex lägger till ny användare för att uppdaterna Nis katalogen annars kommer inte clienterna kunna se ändringen. 
 Vad innebär följande kommando getent passwd?
 för att få information om den för närvarande inloggade användaren. Den visar användarnamn, användar-id och mappnamn. 
